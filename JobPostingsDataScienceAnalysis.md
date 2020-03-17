@@ -1818,16 +1818,16 @@ software
 
 ``` r
 library(ggplot2)
-library(hrbrthemes)
 
 job_description_tokenized_counted %>%
-  filter(n > 8000) %>%
+  filter(n, between(n, 8000, 100000)) %>%
   mutate(job_description_words = reorder(job_description_words, n)) %>%
   ggplot(aes(job_description_words, n)) +
   geom_col() +
   xlab(NULL) +
   coord_flip() +
-  theme_ipsum_rc()
+  theme_minimal() +
+  theme(text = element_text(size=25))
 ```
 
 ![](JobPostingsDataScienceAnalysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
