@@ -1818,6 +1818,7 @@ software
 
 ``` r
 library(ggplot2)
+library(hrbrthemes)
 
 job_description_tokenized_counted %>%
   filter(n > 8000) %>%
@@ -1826,7 +1827,7 @@ job_description_tokenized_counted %>%
   geom_col() +
   xlab(NULL) +
   coord_flip() +
-  theme_minimal()
+  theme_modern_rc()
 ```
 
 ![](JobPostingsDataScienceAnalysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
