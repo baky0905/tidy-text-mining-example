@@ -1827,7 +1827,7 @@ job_description_tokenized_counted %>%
   geom_col() +
   xlab(NULL) +
   coord_flip() +
-  theme_modern_rc()
+  theme_ipsum_rc()
 ```
 
 ![](JobPostingsDataScienceAnalysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->

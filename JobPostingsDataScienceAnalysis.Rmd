@@ -135,7 +135,7 @@ kableExtra::kable(head(job_description_tokenized_counted, 50))
 
 ## Time to plot the word frequency
 
-```{r fig.width=20}
+```{r fig.width=20, fig.width=20}
 library(ggplot2)
 library(hrbrthemes)
 
@@ -146,7 +146,7 @@ job_description_tokenized_counted %>%
   geom_col() +
   xlab(NULL) +
   coord_flip() +
-  theme_modern_rc()
+  theme_ipsum_rc()
 ```
 
 # Word co-ocurrences and correlations
