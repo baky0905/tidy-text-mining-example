@@ -1,0 +1,202 @@
+---
+title: "Text Mining with R (Job Postings of Data Science)"
+date: "3/17/2020"
+author: "Kristijan Bakaric"
+output: github_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Text Mining with R
+
+<img src="https://www.tidytextmining.com/images/cover.png" alt="Book" height="400" width="300">
+
+I will guide you through few basic examples from an amazing book [Text Mining with R](https://www.tidytextmining.com/index.html) where we explore:
+
+* what we mean by tidy data when it comes to text 
+* how tidy data principles can be applied to natural language processing
+
+When text is organized in a format with one token per row, tasks like removing stop words or calculating word frequencies are natural applications of familiar operations within the tidy tool ecosystem. 
+
+The one-token-per-row framework can be extended from single words to n-grams and other meaningful units of text, as well as to many other analysis priorities that we will consider in this book.
+
+## Main questions we would like to answer
+
+**What are the most common words occuring in the job descriptions?**
+
+**What are the most common cooccuring word pairs in the job descriptions?**
+
+
+## Data
+
+Data that we will work with contains 10000 Data Science Job Descriptions and it is available for download on [data.world](https://data.world/jobspikr/10000-data-scientist-job-postings-from-the-usa).
+Data was extracted using [JobsPikr](https://www.jobspikr.com/) - a job data delivery platform that extracts job data from job boards across the globe. 
+
+
+## Let's begin by loading the libraries and the data
+
+We will use several packages from:
+
+* `tidyverse` - The 'tidyverse' is a set of packages that work in harmony because they share common data representations and 'API' design. 
+
+* `tidytext` - This package implements tidy data principles to make many text mining tasks easier, more effective, and consistent with tools already in wide use.
+
+```{r}
+#install.packages("tidyverse")
+#install.packages("tidytext")
+#install.packages("igraph")
+#install.packages("ggraph")
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+```
+
+```{r}
+job_postings <- read_csv("data/data_scientist_united_states_job_postings_jobspikr.csv")
+```
+
+```{r}
+#problems(job_postings)
+```
+
+## Select only relevant columns and show few rows from the loaded table:
+
+```{r}
+job_postings <- job_postings %>% 
+  select(uniq_id, job_description)
+
+head(job_postings)
+```
+
+## Few example rows of only from the `job_description` column.
+
+```{r}
+job_postings %>% select(job_description) %>% slice(1:10)
+```
+
+## Splitting job_description column into one-token-per-row.
+
+First we split a column `job_description` into tokens using the tokenizers package, splitting the table into one-token-per-row. 
+
+```{r}
+job_description_tokenized <- job_postings %>% 
+    unnest_tokens(output = "job_description_words", input = job_description)
+```
+
+**Table has `r dim(job_description_tokenized)[1]` rows and `r dim(job_description_tokenized)[2]` columns.**
+
+```{r}
+kableExtra::kable(head(job_description_tokenized))
+```
+
+
+## Getting rid of the english stop words
+
+
+`stop_words` data frame comes via `{tidytext}` package and is loaded below.
+A data frame is with 1149 rows and 2 variables:
+
+It contains English stop words coming from 3 lexicons. 
+
+http://www.lextek.com/manuals/onix/stopwords1.html
+
+http://www.jmlr.org/papers/volume5/lewis04a/lewis04a.pdf
+
+http://snowball.tartarus.org/algorithms/english/stop.txt
+
+```{r}
+data(stop_words)
+kableExtra::kable(head(stop_words, 20))
+```
+
+## `anti_join` `stop_words` with `job_description_tokenized`.
+
+```{r}
+job_description_tokenized <- job_description_tokenized %>% 
+    select(job_description_words, uniq_id, everything()) %>% 
+    anti_join(stop_words, by = c("job_description_words" = "word"))
+
+kableExtra::kable(head(job_description_tokenized, 20))
+```
+**Table has `r dim(job_description_tokenized)[1]` rows and `r dim(job_description_tokenized)[2]` columns.**
+
+## Count the frequency of tokens
+
+```{r}
+job_description_tokenized_counted <- job_description_tokenized %>% 
+    count(job_description_words, sort = TRUE)
+
+kableExtra::kable(head(job_description_tokenized_counted, 100))
+```
+
+## Time to plot the word frequency
+
+```{r}
+library(ggplot2)
+
+job_description_tokenized_counted %>%
+  filter(n > 8000) %>%
+  mutate(job_description_words = reorder(job_description_words, n)) %>%
+  ggplot(aes(job_description_words, n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+  theme_minimal()
+```
+
+# Word co-ocurrences and correlations
+As a next step, let’s examine which words commonly occur together in the job description column.
+We can then examine word networks for these columns
+
+We can use `pairwise_count()` from the `widyr` package to count how many times each pair of words occurs together in a job description column
+
+```{r}
+library(widyr)
+
+word_pairs <- job_description_tokenized %>% 
+  pairwise_count(job_description_words, uniq_id, sort = TRUE, upper = FALSE)
+
+kableExtra::kable(head(word_pairs, 100))
+
+```
+
+## ggraph package for visualizing our networks
+
+Let’s plot networks of these co-occurring words so we can see these relationships better. 
+
+```{r}
+library(ggplot2)
+library(igraph)
+library(ggraph)
+
+set.seed(1234)
+word_pairs %>%
+  filter(n >= 5000) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+```
+
+## Extra
+
+
+I encorage you to go trough the book [Text Mining with R](https://www.tidytextmining.com/index.html)
+and get yourself introduce with tidy data mining proccess.
+
+Free e-book comes with 3 interesting use cases:
+
+* [Case study: mining NASA metadata](https://www.tidytextmining.com/nasa.html)
+
+* [Case study: analyzing usenet text](https://www.tidytextmining.com/usenet.html)
+
+* [Case study: comparing Twitter archives](https://www.tidytextmining.com/twitter.html
+
