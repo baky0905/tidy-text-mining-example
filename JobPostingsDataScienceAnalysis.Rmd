@@ -49,6 +49,7 @@ We will use several packages from:
 #install.packages("tidytext")
 #install.packages("igraph")
 #install.packages("ggraph")
+#install.packages(("widyr")
 ```
 
 ```{r}
@@ -131,7 +132,7 @@ kableExtra::kable(head(job_description_tokenized, 20))
 job_description_tokenized_counted <- job_description_tokenized %>% 
     count(job_description_words, sort = TRUE)
 
-kableExtra::kable(head(job_description_tokenized_counted, 100))
+kableExtra::kable(head(job_description_tokenized_counted, 50))
 ```
 
 ## Time to plot the word frequency
@@ -161,7 +162,7 @@ library(widyr)
 word_pairs <- job_description_tokenized %>% 
   pairwise_count(job_description_words, uniq_id, sort = TRUE, upper = FALSE)
 
-kableExtra::kable(head(word_pairs, 100))
+kableExtra::kable(head(word_pairs, 50))
 
 ```
 
