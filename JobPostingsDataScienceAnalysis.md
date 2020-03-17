@@ -3,8 +3,6 @@ Text Mining with R (Job Postings of Data Science)
 Kristijan Bakaric
 3/17/2020
 
-# Text Mining with R
-
 <img src="https://www.tidytextmining.com/images/cover.png" alt="Book" height="400" width="300">
 
 I will guide you through few basic examples from an amazing book [Text
@@ -3023,5 +3021,5 @@ Free e-book comes with 3 interesting use cases:
   - [Case study: analyzing usenet
     text](https://www.tidytextmining.com/usenet.html)
 
-  - \[Case study: comparing Twitter
-    archives\](<https://www.tidytextmining.com/twitter.html>
+  - [Case study: comparing Twitter
+    archives](https://www.tidytextmining.com/twitter.html)

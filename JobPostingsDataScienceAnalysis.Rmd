@@ -10,8 +10,6 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-# Text Mining with R
-
 <img src="https://www.tidytextmining.com/images/cover.png" alt="Book" height="400" width="300">
 
 I will guide you through few basic examples from an amazing book [Text Mining with R](https://www.tidytextmining.com/index.html) where we explore:
@@ -199,5 +197,5 @@ Free e-book comes with 3 interesting use cases:
 
 * [Case study: analyzing usenet text](https://www.tidytextmining.com/usenet.html)
 
-* [Case study: comparing Twitter archives](https://www.tidytextmining.com/twitter.html
+* [Case study: comparing Twitter archives](https://www.tidytextmining.com/twitter.html)
 
