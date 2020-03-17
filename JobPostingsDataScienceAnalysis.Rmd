@@ -135,7 +135,7 @@ kableExtra::kable(head(job_description_tokenized_counted, 50))
 
 ## Time to plot the word frequency
 
-```{r fig.width=20, fig.width=20}
+```{r fig.width=30, fig.height=30}
 library(ggplot2)
 library(hrbrthemes)
 
